@@ -11,9 +11,8 @@ class InventoryPage(BasePage):
     INVENTORY_ITEM_DESCRIPTION = (By.CLASS_NAME, "inventory_item_desc")
     INVENTORY_ITEM_PRICE = (By.CLASS_NAME, "inventory_item_price")
     INVENTORY_ITEM_SORT_SELECT = (By.CLASS_NAME, "product_sort_container")
-    INVENTORY_ITEM_ADD_TO_CART_BUTTON = (By.CLASS_NAME, "btn_primary")
+    INVENTORY_ITEM_INVENTORY_BUTTON = (By.CLASS_NAME, "btn_inventory")
     INVENTORY_LIST_CART_COUNTER = (By.CLASS_NAME, 'shopping_cart_badge')
-    INVENTORY_ITEM_REMOVE_BUTTON = (By.CLASS_NAME, "btn_secondary")
 
     def get_inventory_items(self):
         return self.find_elements(self.INVENTORY_LIST_ITEMS)
@@ -32,8 +31,11 @@ class InventoryPage(BasePage):
         select = Select(self.find_element(self.INVENTORY_ITEM_SORT_SELECT))
         select.select_by_visible_text(text)
 
-    def click_item_add_to_cart_button(self, item):
-        item.find_element(*self.INVENTORY_ITEM_ADD_TO_CART_BUTTON).click()
+    def get_item_inventory_button(self, item):
+        return item.find_element(*self.INVENTORY_ITEM_INVENTORY_BUTTON)
+
+    def click_item_inventory_button(self, item):
+        self.get_item_inventory_button(item).click()
 
     def get_item_shopping_cart_amount(self):
         try:
@@ -42,15 +44,6 @@ class InventoryPage(BasePage):
         except (NoSuchElementException, TimeoutException, ValueError):
             return 0
 
-    def get_remove_item_button(self, item):
-        button = item.find_element(*self.INVENTORY_ITEM_REMOVE_BUTTON)
-        return button
-
-    def click_item_remove_from_cart(self, item):
-        self.get_remove_item_button(item).click()
-
-    def get_add_to_cart_item_button(self, item):
-        button = item.find_element(*self.INVENTORY_ITEM_ADD_TO_CART_BUTTON)
-        return button
-
+    def is_item_in_cart(self, item):
+        return self.get_item_inventory_button(item).text == "REMOVE"
 

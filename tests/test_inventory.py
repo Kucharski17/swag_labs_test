@@ -1,9 +1,22 @@
 from pages.inventory_page import InventoryPage
-from conftest import driver, login_user
+from conftest import driver, log_user
+
+
+def logged_in_inventory_page(driver):
+    log_user(driver)
+    return InventoryPage(driver)
+
+
+def clear_cart(driver):
+    inventory_page = InventoryPage(driver)
+    items = inventory_page.get_inventory_items()
+    for item in items:
+        if inventory_page.is_item_in_cart(item):
+            inventory_page.click_item_inventory_button(item)
 
 
 def test_is_inventory_displayed(driver):
-    login_user(driver, "standard_user", "secret_sauce")
+    log_user(driver)
 
     inventory_page = InventoryPage(driver)
     inventory_items = inventory_page.get_inventory_items()
@@ -13,7 +26,7 @@ def test_is_inventory_displayed(driver):
 
 
 def test_inventory_items_have_title_desc_price(driver):
-    login_user(driver, "standard_user", "secret_sauce")
+    log_user(driver)
 
     inventory_page = InventoryPage(driver)
     inventory_items = inventory_page.get_inventory_items()
@@ -34,7 +47,7 @@ def test_inventory_items_have_title_desc_price(driver):
 
 
 def test_inventory_prices_are_positive(driver):
-    login_user(driver, "standard_user", "secret_sauce")
+    log_user(driver)
 
     inventory_page = InventoryPage(driver)
     items = inventory_page.get_inventory_items()
@@ -48,7 +61,7 @@ def test_inventory_prices_are_positive(driver):
 
 
 def test_inventory_prices_low_to_high(driver):
-    login_user(driver, "standard_user", "secret_sauce")
+    log_user(driver)
 
     inventory_page = InventoryPage(driver)
     inventory_page.set_items_sort("Price (low to high)")
@@ -64,7 +77,7 @@ def test_inventory_prices_low_to_high(driver):
 
 
 def test_inventory_prices_high_to_low(driver):
-    login_user(driver, "standard_user", "secret_sauce")
+    log_user(driver)
 
     inventory_page = InventoryPage(driver)
     inventory_page.set_items_sort("Price (high to low)")
@@ -80,7 +93,7 @@ def test_inventory_prices_high_to_low(driver):
 
 
 def test_inventory_name_a_to_z(driver):
-    login_user(driver, "standard_user", "secret_sauce")
+    log_user(driver)
 
     inventory_page = InventoryPage(driver)
     inventory_page.set_items_sort("Name (A to Z)")
@@ -96,7 +109,7 @@ def test_inventory_name_a_to_z(driver):
 
 
 def test_inventory_name_z_to_a(driver):
-    login_user(driver, "standard_user", "secret_sauce")
+    log_user(driver)
 
     inventory_page = InventoryPage(driver)
     inventory_page.set_items_sort("Name (Z to A)")
@@ -112,60 +125,61 @@ def test_inventory_name_z_to_a(driver):
 
 
 def test_inventory_add_to_cart(driver):
-    login_user(driver, "standard_user", "secret_sauce")
+    log_user(driver)
 
     inventory_page = InventoryPage(driver)
     items = inventory_page.get_inventory_items()
-    first_item = items[0]
+    sut = items[0]
 
-    inventory_page.click_item_add_to_cart_button(first_item)
+    inventory_page.click_item_inventory_button(sut)
 
     # Assertion: Checks if the number of items in the cart is 1 after adding the first product
     assert inventory_page.get_item_shopping_cart_amount() == 1
 
 
 def test_inventory_change_button_after_add_to_card(driver):
-    login_user(driver, "standard_user", "secret_sauce")
+    log_user(driver)
+
+    clear_cart(driver)
 
     inventory_page = InventoryPage(driver)
     items = inventory_page.get_inventory_items()
-    first_item = items[0]
+    sut = items[0]
 
-    inventory_page.click_item_add_to_cart_button(first_item)
+    inventory_page.click_item_inventory_button(sut)
 
     # Assertion: Checks if the button text for the first item has changed to "REMOVE"
-    button = inventory_page.get_remove_item_button(first_item)
+    button = inventory_page.get_item_inventory_button(sut)
     assert button.text == "REMOVE"
 
 
 def test_inventory_remove_item_from_card(driver):
-    login_user(driver, "standard_user", "secret_sauce")
+    log_user(driver)
+
+    clear_cart(driver)
 
     inventory_page = InventoryPage(driver)
     items = inventory_page.get_inventory_items()
-    first_item = items[0]
+    sut = items[0]
 
-    inventory_page.click_item_add_to_cart_button(first_item)
-    inventory_page.click_item_remove_from_cart(first_item)
+    inventory_page.click_item_inventory_button(sut)
+    inventory_page.click_item_inventory_button(sut)
 
     assert inventory_page.get_item_shopping_cart_amount() == 0
 
 
-
-
 def test_inventory_change_after_remove_button(driver):
-    login_user(driver, "standard_user", "secret_sauce")
+    log_user(driver)
+
+    clear_cart(driver)
 
     inventory_page = InventoryPage(driver)
     items = inventory_page.get_inventory_items()
-    first_item = items[0]
+    sut = items[0]
 
-    inventory_page.click_item_add_to_cart_button(first_item)
-    inventory_page.click_item_remove_from_cart(first_item)
-    add_to_cart_button = inventory_page.get_add_to_cart_item_button(first_item)
+    inventory_page.click_item_inventory_button(sut)
+    inventory_page.click_item_inventory_button(sut)
+    inventory_button = inventory_page.get_item_inventory_button(sut)
 
-    assert add_to_cart_button.text == "ADD TO CART", ("The button did not return to 'Add to Cart' after removing the "
-                                                      "item")
-
-
-
+    assert inventory_button.text == "ADD TO CART", ("The button did not return to 'Add to Cart' after removing the "
+                                                    "item")
