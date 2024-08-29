@@ -13,7 +13,7 @@ def driver():
     driver.quit()
 
 
-def login_user(driver, username, password):
+def log_user(driver, username="standard_user", password="secret_sauce"):
     login_page = LoginPage(driver)
     login_page.go_to("/v1/index.html")
     login_page.login(username, password)
