@@ -37,6 +37,18 @@ class InventoryPage(BasePage):
     def click_item_inventory_button(self, item):
         self.get_item_inventory_button(item).click()
 
+    def click_item_add_to_cart_button(self, item):
+        if not self.is_item_in_cart(item):
+            self.click_item_inventory_button(item)
+        else:
+            raise ValueError("Item is already in cart!")
+
+    def click_item_remove_from_cart_button(self, item):
+        if self.is_item_in_cart(item):
+            self.click_item_inventory_button(item)
+        else:
+            raise ValueError("Item isn't in cart!")
+
     def get_item_shopping_cart_amount(self):
         try:
             cart_counter_text = self.find_element(self.INVENTORY_LIST_CART_COUNTER).text
@@ -47,3 +59,5 @@ class InventoryPage(BasePage):
     def is_item_in_cart(self, item):
         return self.get_item_inventory_button(item).text == "REMOVE"
 
+    def get_first_inventory_item(self):
+        return self.get_inventory_items()[0]

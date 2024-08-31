@@ -40,7 +40,8 @@ def test_inventory_prices_are_positive(logged_in_inventory_page):
     items = logged_in_inventory_page.get_inventory_items()
     for item in items:
         price = logged_in_inventory_page.get_item_price(item)
-        assert price > 0, f"The price: {price} is not greater than zero for the product {logged_in_inventory_page.get_item_title(item)}"
+        assert price > 0, (f"The price: {price} is not greater than zero for the product "
+                           f"{logged_in_inventory_page.get_item_title(item)}")
 
 
 def test_inventory_prices_low_to_high(logged_in_inventory_page):
@@ -72,31 +73,31 @@ def test_inventory_name_z_to_a(logged_in_inventory_page):
 
 
 def test_inventory_add_to_cart(logged_in_inventory_page, clear_cart):
-    items = logged_in_inventory_page.get_inventory_items()
-    logged_in_inventory_page.click_item_inventory_button(items[0])
-    assert logged_in_inventory_page.get_item_shopping_cart_amount() == 1
+    sut = logged_in_inventory_page.get_first_inventory_item()
+    logged_in_inventory_page.click_item_add_to_cart_button(sut)
+    assert logged_in_inventory_page.get_item_shopping_cart_amount() == 1, \
+        "The item was not successfully added to the cart"
 
 
 def test_inventory_change_button_after_add_to_cart(logged_in_inventory_page, clear_cart):
-    items = logged_in_inventory_page.get_inventory_items()
-    sut = items[0]
-    logged_in_inventory_page.click_item_inventory_button(sut)
+    sut = logged_in_inventory_page.get_first_inventory_item()
+    logged_in_inventory_page.click_item_add_to_cart_button(sut)
     button = logged_in_inventory_page.get_item_inventory_button(sut)
-    assert button.text == "REMOVE"
+    assert button.text == "REMOVE",  \
+        f"The button text for item '{sut}' did not change to 'REMOVE' after adding the item to the cart"
 
 
 def test_inventory_remove_item_from_cart(logged_in_inventory_page, clear_cart):
-    items = logged_in_inventory_page.get_inventory_items()
-    sut = items[0]
-    logged_in_inventory_page.click_item_inventory_button(sut)
-    logged_in_inventory_page.click_item_inventory_button(sut)
-    assert logged_in_inventory_page.get_item_shopping_cart_amount() == 0
+    sut = logged_in_inventory_page.get_first_inventory_item()
+    logged_in_inventory_page.click_item_add_to_cart_button(sut)
+    logged_in_inventory_page.click_item_remove_from_cart_button(sut)
+    assert logged_in_inventory_page.get_item_shopping_cart_amount() == 0, \
+        "The item was not successfully removed from the cart"
 
 
 def test_inventory_change_after_remove_button(logged_in_inventory_page, clear_cart):
-    items = logged_in_inventory_page.get_inventory_items()
-    sut = items[0]
-    logged_in_inventory_page.click_item_inventory_button(sut)
-    logged_in_inventory_page.click_item_inventory_button(sut)
+    sut = logged_in_inventory_page.get_first_inventory_item()
+    logged_in_inventory_page.click_item_add_to_cart_button(sut)
+    logged_in_inventory_page.click_item_remove_from_cart_button(sut)
     inventory_button = logged_in_inventory_page.get_item_inventory_button(sut)
     assert inventory_button.text == "ADD TO CART", "The button did not return to 'Add to Cart' after removing the item"
