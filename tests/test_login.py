@@ -14,7 +14,7 @@ def test_valid_login(driver):
 def test_not_valid_login(driver):
     login_page = LoginPage(driver)
     login_page.go_to("/v1/index.html")
-    login_page.login("standard_user", "bakej_lolo")
+    login_page.login("standard_user", "some_wrong_password")
     error_message = login_page.get_error_message()
 
     # Assertion: Checks if the appropriate error message is displayed after a failed login attempt
