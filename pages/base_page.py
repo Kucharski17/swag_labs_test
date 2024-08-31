@@ -2,7 +2,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.remote.webdriver import WebDriver
-from typing import Tuple, List
+from typing import Tuple
 
 
 class BasePage:
@@ -36,6 +36,16 @@ class BasePage:
         :return: A list of WebElements found.
         """
         return WebDriverWait(self.driver, timeout).until(EC.presence_of_all_elements_located(locator))
+
+    def wait_for_element_to_be_visible(self, locator, timeout=1):
+        return WebDriverWait(self.driver, timeout).until(
+            EC.visibility_of_element_located(locator)
+        )
+
+    def wait_for_element_to_be_invisible(self, locator, timeout=1):
+        return WebDriverWait(self.driver, timeout).until(
+            EC.invisibility_of_element_located(locator)
+        )
 
     def go_to(self, url: str = "") -> None:
         """

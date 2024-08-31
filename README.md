@@ -10,6 +10,7 @@ This project provides a comprehensive test suite for validating the functionalit
 - **test_inventory_page.py**: Contains test cases for validating the inventory page functionality.
 - **pages/login_page.py**: Defines the `LoginPage` class, encapsulating actions and queries related to the login page.
 - **pages/inventory_page.py**: Defines the `InventoryPage` class, encapsulating actions and queries related to the inventory page.
+- **pages/menu_page.py**: Defines the `MenuPage` class, encapsulating actions and queries related to the menu page.
 - **conftest.py**: Provides shared fixtures for setting up and tearing down the browser driver, logging in users, and managing cart operations.
 
 ## Test Suites
@@ -93,6 +94,41 @@ This project provides a comprehensive test suite for validating the functionalit
 11. **test_inventory_change_after_remove_button**
     - **Purpose**: Ensures that the button text changes back to "ADD TO CART" after removing an item from the cart.
     - **Assertion**: The button text returns to "ADD TO CART" after the item is removed from the cart.
+
+### Menu Page Test Cases
+
+1. **test_is_menu_displayed_after_click_menu_button**
+   - **Purpose**: Ensures that the menu is displayed after clicking the menu button.
+   - **Steps**:
+     1. Open the menu.
+   - **Assertion**: The menu is displayed.
+
+2. **test_is_menu_closed_after_click_close_menu_button**
+   - **Purpose**: Ensures that the menu is closed after clicking the close menu button.
+   - **Steps**:
+     1. Open the menu.
+     2. Close the menu.
+   - **Assertion**: The menu is no longer displayed.
+
+3. **test_is_any_menu_item_present**
+   - **Purpose**: Ensures that there is at least one menu item present.
+   - **Steps**:
+     1. Open the menu.
+   - **Assertion**: There is at least one menu item.
+
+4. **test_go_to_index_after_click_logout**
+   - **Purpose**: Ensures that the user is redirected to the index page after clicking the logout button.
+   - **Steps**:
+     1. Open the menu.
+     2. Click the logout button.
+   - **Assertion**: The URL contains "/v1/index.html" indicating successful logout.
+
+5. **test_go_to_inventory_after_click_all_items**
+   - **Purpose**: Ensures that the user is redirected to the inventory page after clicking "All Items".
+   - **Steps**:
+     1. Open the menu.
+     2. Click "All Items".
+   - **Assertion**: The URL contains "/v1/inventory.html" indicating successful navigation to the inventory page.
 
 ## How to Run the Tests
 
